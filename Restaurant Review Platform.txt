@@ -1,0 +1,7 @@
+User
+Restaurant
+Review
+Photo
+Address
+GeoLocation
+Operating Hours
