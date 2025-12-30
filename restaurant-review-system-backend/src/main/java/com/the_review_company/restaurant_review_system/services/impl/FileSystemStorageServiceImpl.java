@@ -1,4 +1,4 @@
-package com.the_review_company.restaurant_review_system.services.services.impl;
+package com.the_review_company.restaurant_review_system.services.impl;
 
 import ch.qos.logback.core.util.StringUtil;
 import com.the_review_company.restaurant_review_system.exceptions.StorageException;

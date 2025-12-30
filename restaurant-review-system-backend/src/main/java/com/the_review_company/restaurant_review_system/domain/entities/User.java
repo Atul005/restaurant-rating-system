@@ -3,9 +3,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+
+import java.io.File;
+import java.util.List;
+import java.util.Map;
 
 @Document(indexName = "users")
 @Data
@@ -14,7 +19,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 @Builder
 public class User {
 
-    @Field(type = FieldType.Keyword)
+    @Id
     private String id;
 
     @Field(type = FieldType.Text)
@@ -28,5 +33,11 @@ public class User {
 
     @Field(type = FieldType.Keyword)
     private String email;
+
+    @Field(type = FieldType.Keyword)
+    private List<String> roles;
+
+    @Field(type = FieldType.Object)
+    private Map<String, Object> additionalProperties;
 
 }

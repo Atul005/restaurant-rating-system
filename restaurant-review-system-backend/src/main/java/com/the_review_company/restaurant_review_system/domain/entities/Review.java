@@ -3,6 +3,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
@@ -19,7 +20,7 @@ import java.util.List;
 @Builder
 public class Review {
 
-    @Field(type = FieldType.Keyword)
+    @Id
     private String id;
 
     @Field(type = FieldType.Text)
@@ -34,13 +35,13 @@ public class Review {
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second)
     private LocalDateTime lastEdited;
 
-    @Field(type = FieldType.Nested)
-    private List<Photo> photos = new ArrayList<>();
+    @Field(type = FieldType.Keyword)
+    private List<String> photos = new ArrayList<>();
 
-    @Field(type = FieldType.Nested)
-    private User writtenBy;
+    @Field(type = FieldType.Keyword)
+    private String userID;
 
-    @Field(type = FieldType.Nested)
-    private Restaurant restaurant;
+    @Field(type = FieldType.Keyword)
+    private String restaurantId;
 
 }

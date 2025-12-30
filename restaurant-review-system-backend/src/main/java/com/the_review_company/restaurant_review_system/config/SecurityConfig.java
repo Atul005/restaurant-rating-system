@@ -1,41 +1,49 @@
-package com.the_review_company.restaurant_review_system.config;
+    package com.the_review_company.restaurant_review_system.config;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
-import org.springframework.security.web.SecurityFilterChain;
+    import lombok.RequiredArgsConstructor;
+    import org.springframework.context.annotation.Bean;
+    import org.springframework.context.annotation.Configuration;
+    import org.springframework.http.HttpMethod;
+    import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+    import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+    import org.springframework.security.config.http.SessionCreationPolicy;
+    import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+    import org.springframework.security.web.SecurityFilterChain;
 
-@Configuration
-public class SecurityConfig {
+    @Configuration
+    @RequiredArgsConstructor
+    public class SecurityConfig {
 
-    public SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
+        private final CustomJwtToUserConvertor customJwtToUserConvertor;
 
-        httpSecurity
-                .authorizeHttpRequests(
-                        auth ->
-                                auth.anyRequest().authenticated()
-                )
+        @Bean
+        public SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
 
-                .oauth2ResourceServer(oauth2 ->
-                        oauth2.jwt( jwt ->
-                                jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())
+            httpSecurity
+                    .authorizeHttpRequests(
+                            auth ->
+                                    auth
+                                            .requestMatchers(HttpMethod.GET, "/api/photos/**").permitAll()
+                                            .anyRequest().authenticated()
+                    )
 
-                        ))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .csrf(AbstractHttpConfigurer::disable);
+                    .oauth2ResourceServer(oauth2 ->
+                            oauth2.jwt( jwt ->
+                                    jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())
+
+                            ))
+                    .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                    .csrf(AbstractHttpConfigurer::disable);
 
 
-        return httpSecurity.build();
+            return httpSecurity.build();
+        }
+
+        @Bean
+        public JwtAuthenticationConverter jwtAuthenticationConverter(){
+            return new JwtAuthenticationConverter();
+        }
+
+
+
     }
-
-    @Bean
-    public JwtAuthenticationConverter jwtAuthenticationConverter(){
-        return new JwtAuthenticationConverter();
-    }
-
-
-
-}

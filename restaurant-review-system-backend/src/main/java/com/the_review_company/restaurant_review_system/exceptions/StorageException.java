@@ -1,19 +1,19 @@
 package com.the_review_company.restaurant_review_system.exceptions;
 
-public class BaseException extends RuntimeException{
+public class StorageException extends RuntimeException{
 
-    public BaseException() {
+    public StorageException() {
     }
 
-    public BaseException(String message) {
+    public StorageException(String message) {
         super(message);
     }
 
-    public BaseException(String message, Throwable cause) {
+    public StorageException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public BaseException(Throwable cause) {
+    public StorageException(Throwable cause) {
         super(cause);
     }
 }

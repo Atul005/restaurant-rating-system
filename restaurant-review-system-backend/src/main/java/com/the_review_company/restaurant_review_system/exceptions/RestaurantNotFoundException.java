@@ -1,19 +1,19 @@
 package com.the_review_company.restaurant_review_system.exceptions;
 
-public class ReviewNotFoundException extends RuntimeException{
+public class RestaurantNotFoundException extends RuntimeException{
 
-    public ReviewNotFoundException() {
+    public RestaurantNotFoundException() {
     }
 
-    public ReviewNotFoundException(String message) {
+    public RestaurantNotFoundException(String message) {
         super(message);
     }
 
-    public ReviewNotFoundException(String message, Throwable cause) {
+    public RestaurantNotFoundException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public ReviewNotFoundException(Throwable cause) {
+    public RestaurantNotFoundException(Throwable cause) {
         super(cause);
     }
 }
