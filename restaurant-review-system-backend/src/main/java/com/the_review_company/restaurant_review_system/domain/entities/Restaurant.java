@@ -45,19 +45,13 @@ public class Restaurant {
     @Field(type = FieldType.Nested)
     private OperatingHours operatingHours;
 
-    @Field(type = FieldType.Keyword)
-    private List<String> photoIds = new ArrayList<>();
+    @Field(type = FieldType.Nested)
+    private List<Photo> photos = new ArrayList<>();
 
-    @Field(type = FieldType.Keyword)
-    private List<String> reviewIds = new ArrayList<>();
+    @Field(type = FieldType.Nested)
+    private List<Review> reviews = new ArrayList<>();
 
-    @Field(type = FieldType.Keyword)
-    private String createdBy;
-
-
-
-
-
-
+    @Field(type = FieldType.Nested)
+    private User createdBy;
 
 }
