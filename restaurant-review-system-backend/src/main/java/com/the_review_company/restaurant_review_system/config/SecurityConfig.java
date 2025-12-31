@@ -29,7 +29,7 @@
 
                     .oauth2ResourceServer(oauth2 ->
                             oauth2.jwt( jwt ->
-                                    jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())
+                                    jwt.jwtAuthenticationConverter(customJwtToUserConvertor)
 
                             ))
                     .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -39,10 +39,12 @@
             return httpSecurity.build();
         }
 
-        @Bean
-        public JwtAuthenticationConverter jwtAuthenticationConverter(){
-            return new JwtAuthenticationConverter();
-        }
+//        @Bean
+//        public JwtAuthenticationConverter jwtAuthenticationConverter(){
+//            JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+//            jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(customJwtToUserConvertor);
+//            return new JwtAuthenticationConverter();
+//        }
 
 
 

@@ -28,11 +28,11 @@ public class RestaurantCreateUpdateRequestDTO {
     private String contactInformation;
 
     @Valid
-    private AddressDTO addressDTO;
+    private AddressDTO address;
 
     @Valid
     private OperatingHoursDTO operatingHours;
 
     @Size(min = 1, message = "Atleast one photo is required")
-    private List<String> photosIds;
+    private List<String> photoIds;
 }

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class GeoPointDTO {
 
-    private Double latitude;
-    private Double longitude;
+    private Double lat;
+    private Double lon;
 
 }

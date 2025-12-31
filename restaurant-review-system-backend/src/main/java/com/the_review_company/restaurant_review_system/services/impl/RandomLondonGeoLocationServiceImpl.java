@@ -17,7 +17,7 @@ public class RandomLondonGeoLocationServiceImpl implements GeoLocationService {
     private static final float MIN_LATITUDE = 51.28f;
     private static final float MAX_LATITUDE = 51.68f;
     private static final float MIN_LONGITUDE = -0.489f;
-    private static final float MAX_LONGITUDE = 0.236;
+    private static final float MAX_LONGITUDE = 0.236f;
 
 // Bounding box coorindates for India, enhance this feature as per India
 //    private static final float MIN_LATITUDE = 7.96553477623f;

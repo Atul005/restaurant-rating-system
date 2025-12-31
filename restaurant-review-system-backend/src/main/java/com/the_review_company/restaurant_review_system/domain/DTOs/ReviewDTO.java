@@ -32,7 +32,7 @@ public class ReviewDTO {
 
     private List<String> photos = new ArrayList<>();
 
-    private UserDTO userID;
+    private String userID;
 
     private String restaurantId;
 

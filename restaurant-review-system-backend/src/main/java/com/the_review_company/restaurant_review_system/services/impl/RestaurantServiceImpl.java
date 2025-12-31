@@ -10,6 +10,7 @@ import com.the_review_company.restaurant_review_system.repositories.RestaurantRe
 import com.the_review_company.restaurant_review_system.services.GeoLocationService;
 import com.the_review_company.restaurant_review_system.services.RestaurantService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -27,7 +28,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 
         Address address = request.getAddress();
         GeoLocation restaurantGeolocation = geoLocationService.geoLocate(address);
-        List<Photo> photoList = request.getPhotosIds()
+        List<Photo> photoList = request.getPhotoIds()
                 .stream()
                 .map(
                         photoUrl -> Photo.builder()
@@ -44,6 +45,7 @@ public class RestaurantServiceImpl implements RestaurantService {
                 .photos(photoList)
                 .averageRatings(0f)
                 .createdBy(user)
+                .geoLocation(new GeoPoint(restaurantGeolocation.getLatitude(), restaurantGeolocation.getLongitude()))
                 .build();
         return restaurantRepository.save(restaurant);
 

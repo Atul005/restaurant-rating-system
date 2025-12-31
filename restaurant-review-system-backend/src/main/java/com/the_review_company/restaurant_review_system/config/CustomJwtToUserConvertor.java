@@ -1,5 +1,6 @@
 package com.the_review_company.restaurant_review_system.config;
 
+import com.nimbusds.jose.shaded.gson.internal.LinkedTreeMap;
 import com.the_review_company.restaurant_review_system.domain.entities.User;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -44,7 +45,27 @@ public class CustomJwtToUserConvertor implements Converter<Jwt, AbstractAuthenti
         allClaims.remove("email");
 
         List<String> roles = jwt.getClaimAsStringList("roles");
+//        if(roles == null){
+////            roles = jwt.getClaim("realm_access") != null
+////                    ? jwt.getClaim("realm_access")
+////                    : List.of();
+//            LinkedTreeMap map = jwt.getClaim("realm_access");
+//            roles = (List<String>)map.get("roles");
+//        }
 
+        if (roles == null) {
+            Map<String, Object> realmAccess = jwt.getClaim("realm_access");
+            if (realmAccess != null && realmAccess.get("roles") instanceof List<?> realmRoles) {
+                roles = realmRoles.stream()
+                        .map(Object::toString)
+                        .toList();
+            } else {
+                roles = List.of();
+            }
+        }
+
+
+        user.setRoles(roles);
         user.setAdditionalProperties(allClaims);
         return user;
     }

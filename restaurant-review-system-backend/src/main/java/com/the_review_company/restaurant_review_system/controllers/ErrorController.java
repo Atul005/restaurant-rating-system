@@ -6,12 +6,39 @@ import com.the_review_company.restaurant_review_system.exceptions.StorageExcepti
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.stream.Collectors;
 
 
 @ControllerAdvice
 @Slf4j
 public class ErrorController {
+
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorDTO> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex){
+        log.error("Caught MethodArgumentNotValidException", ex);
+
+
+        String errors = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(
+                        fieldError -> fieldError.getField() + ":" + fieldError.getDefaultMessage()
+                )
+                .collect(Collectors.joining(" , "));
+
+
+        ErrorDTO errorDTO = ErrorDTO.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message(errors)
+                .build();
+
+        return new ResponseEntity<>(errorDTO, HttpStatus.BAD_REQUEST);
+    }
+
 
     @ExceptionHandler(StorageException.class)
     public ResponseEntity<ErrorDTO> handleStorageException(StorageException ex){

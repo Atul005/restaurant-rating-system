@@ -20,7 +20,7 @@ public class RestaurantCreateUpdateRequest {
     private String contactInformation;
     private Address address;
     private OperatingHours operatingHours;
-    private List<String> photosIds;
+    private List<String> photoIds;
 
 
 }
