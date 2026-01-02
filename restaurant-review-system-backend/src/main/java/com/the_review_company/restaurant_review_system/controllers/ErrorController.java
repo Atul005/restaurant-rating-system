@@ -2,6 +2,7 @@ package com.the_review_company.restaurant_review_system.controllers;
 
 import com.the_review_company.restaurant_review_system.domain.DTOs.ErrorDTO;
 import com.the_review_company.restaurant_review_system.exceptions.BaseException;
+import com.the_review_company.restaurant_review_system.exceptions.RestaurantNotFoundException;
 import com.the_review_company.restaurant_review_system.exceptions.StorageException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -37,6 +38,19 @@ public class ErrorController {
                 .build();
 
         return new ResponseEntity<>(errorDTO, HttpStatus.BAD_REQUEST);
+    }
+
+
+    @ExceptionHandler(RestaurantNotFoundException.class)
+    public ResponseEntity<ErrorDTO> handleRestaurantNotFoundException(RestaurantNotFoundException ex){
+        log.error("Caught RestaurantNotFoundException", ex);
+
+        ErrorDTO errorDTO = ErrorDTO.builder()
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .message("The specified restaurant is not found ")
+                .build();
+
+        return new ResponseEntity<>(errorDTO, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 

@@ -21,7 +21,8 @@ public class CustomJwtToUserConvertor implements Converter<Jwt, AbstractAuthenti
     public AbstractAuthenticationToken convert(Jwt jwt) {
         User user = userFromJwt(jwt);
         List<SimpleGrantedAuthority> grantedAuthorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))
+                .filter(role -> role.startsWith("ROLE_"))
+                .map(SimpleGrantedAuthority::new)
                 .toList();
         return new UsernamePasswordAuthenticationToken(
                 user, null, grantedAuthorities

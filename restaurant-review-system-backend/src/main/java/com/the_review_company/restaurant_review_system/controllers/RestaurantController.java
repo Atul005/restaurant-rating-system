@@ -2,18 +2,18 @@ package com.the_review_company.restaurant_review_system.controllers;
 
 import com.the_review_company.restaurant_review_system.domain.DTOs.RestaurantCreateUpdateRequestDTO;
 import com.the_review_company.restaurant_review_system.domain.DTOs.RestaurantResponseDTO;
+import com.the_review_company.restaurant_review_system.domain.DTOs.RestaurantSummaryDTO;
 import com.the_review_company.restaurant_review_system.domain.RestaurantCreateUpdateRequest;
 import com.the_review_company.restaurant_review_system.domain.entities.Restaurant;
 import com.the_review_company.restaurant_review_system.domain.entities.User;
 import com.the_review_company.restaurant_review_system.mapper.RestaurantMapper;
 import com.the_review_company.restaurant_review_system.services.RestaurantService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -37,5 +37,51 @@ public class RestaurantController {
         return ResponseEntity.ok(restaurantMapper.toDTO(createdRestaurant));
 
     }
+
+
+    @GetMapping
+    public Page<RestaurantSummaryDTO> searchRestaurants(
+            @RequestParam(required = false) String q,
+            @RequestParam(required = false) Float minRating,
+            @RequestParam(required = false) Float latitude,
+            @RequestParam(required = false) Float longitude,
+            @RequestParam(required = false) Float radius,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "20") int size
+    ){
+
+        Page<Restaurant> result = restaurantService.searchRestaurant(
+                q, minRating, latitude, longitude,
+                radius, PageRequest.of(page - 1, size));
+
+        return result.map(restaurantMapper::toRestaurantSummaryDTO);
+    }
+
+    @GetMapping(path = "/{restaurant_id}")
+    public ResponseEntity<RestaurantSummaryDTO> getRestaurant(@PathVariable("restaurant_id") String restaurantId){
+        return restaurantService.getRestaurant(restaurantId)
+                .map(rest -> ResponseEntity.ok(restaurantMapper.toRestaurantSummaryDTO(rest)))
+                .orElse(ResponseEntity.notFound().build());
+
+    }
+
+
+    @PutMapping(path = "/{restaurant_id}")
+    public ResponseEntity<RestaurantResponseDTO> updateRestaurant(@PathVariable("restaurant_id") String restaurantId,
+                                                                  @RequestBody RestaurantCreateUpdateRequestDTO  requestDTO){
+
+
+        RestaurantCreateUpdateRequest restaurantCreateUpdateRequest = restaurantMapper.fromDTO(requestDTO);
+        Restaurant updatedRestaurant = restaurantService.updateRestaurant(restaurantId, restaurantCreateUpdateRequest);
+
+        return ResponseEntity.ok(restaurantMapper.toDTO(updatedRestaurant));
+    }
+
+    @DeleteMapping(path = "/{restaurant_id}")
+    public ResponseEntity<Void> deleteRestaurant(@PathVariable("restaurant_id") String restaurantId){
+        restaurantService.deleteRestaurant(restaurantId);
+        return ResponseEntity.noContent().build();
+    }
+
 
 }

@@ -1,6 +1,6 @@
 package com.the_review_company.restaurant_review_system.exceptions;
 
-public class RestaurantNotFoundException extends RuntimeException{
+public class RestaurantNotFoundException extends BaseException{
 
     public RestaurantNotFoundException() {
     }

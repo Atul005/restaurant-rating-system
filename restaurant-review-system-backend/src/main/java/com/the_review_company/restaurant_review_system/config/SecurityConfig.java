@@ -24,6 +24,9 @@
                             auth ->
                                     auth
                                             .requestMatchers(HttpMethod.GET, "/api/photos/**").permitAll()
+                                            .requestMatchers(HttpMethod.GET, "/api/restaurants/**").permitAll()
+                                            .requestMatchers(HttpMethod.POST,"/api/restaurants/**").hasRole("ADMIN")
+                                            .requestMatchers(HttpMethod.DELETE,"/api/restaurants/**").hasRole("ADMIN")
                                             .anyRequest().authenticated()
                     )
 
@@ -38,14 +41,5 @@
 
             return httpSecurity.build();
         }
-
-//        @Bean
-//        public JwtAuthenticationConverter jwtAuthenticationConverter(){
-//            JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-//            jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(customJwtToUserConvertor);
-//            return new JwtAuthenticationConverter();
-//        }
-
-
 
     }
