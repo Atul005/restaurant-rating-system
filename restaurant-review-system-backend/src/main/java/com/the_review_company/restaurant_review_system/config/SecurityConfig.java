@@ -7,7 +7,6 @@
     import org.springframework.security.config.annotation.web.builders.HttpSecurity;
     import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
     import org.springframework.security.config.http.SessionCreationPolicy;
-    import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
     import org.springframework.security.web.SecurityFilterChain;
 
     @Configuration
@@ -25,8 +24,8 @@
                                     auth
                                             .requestMatchers(HttpMethod.GET, "/api/photos/**").permitAll()
                                             .requestMatchers(HttpMethod.GET, "/api/restaurants/**").permitAll()
-                                            .requestMatchers(HttpMethod.POST,"/api/restaurants/**").hasRole("ADMIN")
-                                            .requestMatchers(HttpMethod.DELETE,"/api/restaurants/**").hasRole("ADMIN")
+//                                            .requestMatchers(HttpMethod.POST,"/api/restaurants/**").hasRole("ADMIN")
+//                                            .requestMatchers(HttpMethod.DELETE,"/api/restaurants/**").hasRole("ADMIN")
                                             .anyRequest().authenticated()
                     )
 

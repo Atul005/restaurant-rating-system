@@ -21,6 +21,7 @@ public interface RestaurantMapper {
     RestaurantCreateUpdateRequest fromDTO(RestaurantCreateUpdateRequestDTO dto);
 
     @Mapping(target = "geoLocation", source = "geoLocation", qualifiedByName = "mapGeoPoint")
+    @Mapping(target = "totalReviews", source = "reviews", qualifiedByName = "populateTotalReviews")
     RestaurantResponseDTO toDTO(Restaurant restaurant);
 
     @Mapping(target = "totalReviews", source = "reviews", qualifiedByName = "populateTotalReviews")

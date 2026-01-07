@@ -1,4 +1,4 @@
-package com.the_review_company.restaurant_review_system.domain.entities;
+package com.the_review_company.restaurant_review_system.domain.DTOs;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,35 +13,16 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Document(indexName = "reviews")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Review {
+public class ReviewCreateUpdateRequest {
 
-    @Id
-    private String id;
-
-    @Field(type = FieldType.Text)
     private String content;
-
-    @Field(type = FieldType.Integer)
     private Integer rating;
-
-    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second)
-    private LocalDateTime datePosted;
-
-    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second)
-    private LocalDateTime lastEdited;
-
-    @Field(type = FieldType.Nested)
-    private List<Photo> photos = new ArrayList<>();
-
-    @Field(type = FieldType.Keyword)
+    private List<String> photoIds = new ArrayList<>();
     private String userID;
-
-    @Field(type = FieldType.Keyword)
     private String restaurantId;
 
 }

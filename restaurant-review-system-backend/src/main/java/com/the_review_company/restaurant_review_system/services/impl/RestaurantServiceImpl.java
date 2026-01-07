@@ -1,15 +1,18 @@
 package com.the_review_company.restaurant_review_system.services.impl;
 
+import com.the_review_company.restaurant_review_system.domain.DTOs.RestaurantSummaryDTO;
+import com.the_review_company.restaurant_review_system.domain.DTOs.ReviewResponseDTO;
+import com.the_review_company.restaurant_review_system.domain.DTOs.UserDTO;
 import com.the_review_company.restaurant_review_system.domain.GeoLocation;
 import com.the_review_company.restaurant_review_system.domain.RestaurantCreateUpdateRequest;
-import com.the_review_company.restaurant_review_system.domain.entities.Address;
-import com.the_review_company.restaurant_review_system.domain.entities.Photo;
-import com.the_review_company.restaurant_review_system.domain.entities.Restaurant;
-import com.the_review_company.restaurant_review_system.domain.entities.User;
+import com.the_review_company.restaurant_review_system.domain.entities.*;
 import com.the_review_company.restaurant_review_system.exceptions.RestaurantNotFoundException;
+import com.the_review_company.restaurant_review_system.mapper.RestaurantMapper;
+import com.the_review_company.restaurant_review_system.mapper.UserMapper;
 import com.the_review_company.restaurant_review_system.repositories.RestaurantRepository;
 import com.the_review_company.restaurant_review_system.services.GeoLocationService;
 import com.the_review_company.restaurant_review_system.services.RestaurantService;
+import com.the_review_company.restaurant_review_system.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +21,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +32,9 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
     private final GeoLocationService geoLocationService;
+    private final RestaurantMapper restaurantMapper;
+    private final UserMapper userMapper;
+    private final UserService userService;
 
     @Override
     public Restaurant createRestaurant(RestaurantCreateUpdateRequest request, User user) {
@@ -83,6 +92,13 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
+    public RestaurantSummaryDTO getRestaurantSummaryDTO(String restaurantId) {
+        Restaurant restaurant = getRestaurant(restaurantId)
+                .orElseThrow(() -> new RestaurantNotFoundException("No such restaurant found with id " + restaurantId));
+        return buildRestaurantSummary(restaurant);
+    }
+
+    @Override
     public Restaurant updateRestaurant(String id, RestaurantCreateUpdateRequest request) {
         Restaurant restaurant = getRestaurant(id)
                 .orElseThrow(() ->
@@ -115,4 +131,42 @@ public class RestaurantServiceImpl implements RestaurantService {
     public void deleteRestaurant(String id) {
         restaurantRepository.deleteById(id);
     }
+
+    private RestaurantSummaryDTO buildRestaurantSummary(Restaurant restaurant) {
+        RestaurantSummaryDTO restaurantSummaryDTO = restaurantMapper.toRestaurantSummaryDTO(restaurant);
+        User createdBy = restaurant.getCreatedBy();
+        UserDTO userDTO = userMapper.toDTO(createdBy);
+        restaurantSummaryDTO.setWrittenBy(userDTO);
+        List<ReviewResponseDTO> reviews = restaurantSummaryDTO.getReviews();
+        populateAuthorInReviews(reviews, restaurant);
+        return restaurantSummaryDTO;
+    }
+
+    public void populateAuthorInReviews(List<ReviewResponseDTO> reviews, Restaurant restaurant) {
+        Map<String, ReviewResponseDTO> idToReviewResponseDTOMAP = reviews.stream()
+                .collect(
+                        Collectors
+                                .toMap(ReviewResponseDTO::getId,
+                                        r -> r, (a, b) -> b));
+
+        Map<String, Review> idToReviewMap = restaurant.getReviews()
+                .stream()
+                .collect(
+                        Collectors
+                                .toMap(Review::getId,
+                                        r -> r, (a, b) -> b));
+
+        Set<String> userIds = restaurant.getReviews().stream().map(Review::getUserID).collect(Collectors.toSet());
+        Map<String, UserDTO> userDTOMap = userService.fetchUsers(userIds)
+                .stream()
+                .collect(Collectors.toMap(User::getId, userMapper::toDTO));
+
+        idToReviewResponseDTOMAP.keySet().forEach(key -> {
+            Review review = idToReviewMap.get(key);
+            UserDTO writtenBy = review != null ? userDTOMap.getOrDefault(review.getUserID(), userService.getDummyUserDTO()) : userService.getDummyUserDTO();
+            idToReviewResponseDTOMAP.get(key).setWrittenBy(writtenBy);
+        });
+    }
+
+
 }

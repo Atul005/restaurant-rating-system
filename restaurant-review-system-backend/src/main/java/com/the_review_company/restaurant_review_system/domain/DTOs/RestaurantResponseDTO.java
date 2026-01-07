@@ -41,8 +41,9 @@ public class RestaurantResponseDTO {
 
     private List<PhotoDTO> photos = new ArrayList<>();
 
-    private List<ReviewDTO> reviews = new ArrayList<>();
+    private List<ReviewResponseDTO> reviews = new ArrayList<>();
 
     private UserDTO createdBy;
 
+    private Integer totalReviews;
 }

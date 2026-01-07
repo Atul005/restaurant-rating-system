@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,29 +13,15 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RestaurantSummaryDTO {
+public class ReviewResponseDTO {
 
     private String id;
-
-    private String name;
-
-    private String cuisineType;
-
-    private String contactInfo;
-
-    private Float averageRatings;
-
-    private GeoPointDTO geoLocation;
-
-    private AddressDTO address;
-
-    private OperatingHoursDTO operatingHours;
-
+    private String content;
+    private Integer rating;
     private List<PhotoDTO> photos = new ArrayList<>();
-
-    private Integer totalReviews;
-
+    private LocalDateTime datePosted;
+    private LocalDateTime lastEdited;
     private UserDTO writtenBy;
+    private String restaurantId;
 
-    private List<ReviewResponseDTO> reviews = new ArrayList<>();
 }
